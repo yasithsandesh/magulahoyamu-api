@@ -1,0 +1,25 @@
+# --------------------
+# Build stage (JDK 17)
+# --------------------
+FROM maven:3.9.2-eclipse-temurin-17 AS build
+WORKDIR /app
+
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# --------------------
+# Run stage (JRE 17 Debian)
+# --------------------
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /app
+
+# Copy WAR file
+COPY --from=build /app/target/magulahoyamu-api-0.0.1-SNAPSHOT.war app.war
+
+EXPOSE 8080
+
+# Run the WAR file with embedded Tomcat
+ENTRYPOINT ["java", "-jar", "app.war"]
