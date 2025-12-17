@@ -16,10 +16,10 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
-# Copy WAR file
-COPY --from=build /app/target/magulahoyamu-api-0.0.1-SNAPSHOT.war app.war
+# Copy
+COPY --from=build /app/target/magulahoyamu-api-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
-# Run the WAR file with embedded Tomcat
-ENTRYPOINT ["java", "-jar", "app.war"]
+# Run the JAR file with embedded Tomcat
+ENTRYPOINT ["java","-jar","app.jar"]
